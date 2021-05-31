@@ -62,7 +62,7 @@ public class AircraftController : MonoBehaviour
     {
         var velocity = rigidBody.velocity.z;
         var lift = liftCoeficient * 0.5f * GetAirDensity() * Mathf.Pow(velocity, 2) * wingArea;
-        var verticalDrag = dragCoeficient * 0.5f * GetAirDensity() * Mathf.Pow(rigidBody.velocity.y, 2) * wingArea;
+        var verticalDrag = liftCoeficient * 0.5f * GetAirDensity() * Mathf.Pow(rigidBody.velocity.y, 2) * wingArea;
         Debug.Log("lift: " + lift);
         return lift - verticalDrag;
     }
@@ -81,6 +81,8 @@ public class AircraftController : MonoBehaviour
         rigidBody.AddForce(new Vector3(0, GetLift(), force));
         if (runway.position.z <= transform.position.z - 4000f)
             runway.position = new Vector3(runway.position.x, runway.position.y, transform.position.z);
+
+        transform.rotation = Quaternion.LookRotation(rigidBody.velocity.normalized);
 
         horizontalSpeedText.text = rigidBody.velocity.z + " m/s";
         verticalSpeedText.text = rigidBody.velocity.y + " m/s";
