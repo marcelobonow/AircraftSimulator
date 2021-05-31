@@ -64,7 +64,7 @@ public class AircraftController : MonoBehaviour
     {
         var force = engineForce - GetDrag();
         rigidBody.AddForce(new Vector3(0, GetLift(), force));
-        if (runway.position.z <= transform.position.z - 40f)
+        if (runway.position.z <= transform.position.z - 4000f)
         {
             runway.position = new Vector3(runway.position.x, runway.position.y, transform.position.z);
         }
