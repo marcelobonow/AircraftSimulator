@@ -10,16 +10,19 @@ public class AircraftController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI horizontalSpeedText;
     [SerializeField] private TextMeshProUGUI verticalSpeedText;
     [SerializeField] private TextMeshProUGUI heightText;
+    [SerializeField] private TextMeshProUGUI engineForceText;
 
     private Rigidbody rigidBody;
 
-    private const float mass = 3000;
-    private const float gravity = 9.8f;
-    private const float dragCoeficient = 0.027f;
-    private const float wingArea = 25.9f;
-    private const float liftCoeficient = 0.2f;
-    private const float engineForce = mass * gravity * 0.5f;
-    private const float initialAirDensity = 1.1455f;
+    [SerializeField] private float mass = 3000;
+    [SerializeField] private float gravity = 9.8f;
+    [SerializeField] private float dragCoeficient = 0.017f;
+    [SerializeField] private float dragCoeficientVertical = 0.087f;
+    [SerializeField] private float wingArea = 25.9f;
+    [SerializeField] private float liftCoeficient = 0.1f;
+    [SerializeField] private float engineForce = 12000;
+    [SerializeField] private float initialAirDensity = 1.1455f;
+    private float maxHeight = 80 * 1000; ///80 KM como mï¿½xima altura
 
     private void Awake()
     {
@@ -36,7 +39,7 @@ public class AircraftController : MonoBehaviour
         ///http://www.jaymaron.com/flight.html
         ///https://www.slideshare.net/sureshkrv/mel341-3
         ///Colocando limite de 80km, e iniciando com densidade de 1.1455, temos que a densidade diminui 14,31875e-6 por metro
-        ///Na equação:
+        ///Na equaï¿½ï¿½o:
         ///L = Lift
         ///CL = Angulo de ataque e formato da asa (constante no modelo)
         ///p = densidade do ar
@@ -46,7 +49,7 @@ public class AircraftController : MonoBehaviour
 
         ///D = dc * 1/2 * p * V^2 * A
 
-        ///Força horizontal= Força do motor - Força de arrasto
+        ///Forï¿½a horizontal= Forï¿½a do motor - Forï¿½a de arrasto
     }
 
     private float GetDrag()
@@ -62,22 +65,30 @@ public class AircraftController : MonoBehaviour
     {
         var velocity = rigidBody.velocity.z;
         var lift = liftCoeficient * 0.5f * GetAirDensity() * Mathf.Pow(velocity, 2) * wingArea;
-        var verticalDrag = liftCoeficient * 0.5f * GetAirDensity() * Mathf.Pow(rigidBody.velocity.y, 2) * wingArea;
+        var verticalDrag = dragCoeficientVertical * 0.5f * GetAirDensity() * Mathf.Pow(rigidBody.velocity.y, 2f) * wingArea;
         Debug.Log("lift: " + lift);
         return lift - verticalDrag;
     }
 
     private float GetAirDensity()
     {
-        var height = rigidBody.position.y;
-        var airDensityCalculated = initialAirDensity - (14.31875e-6 * height);
+
+        var airDensityCalculated = initialAirDensity - (14.31875e-6 * GetHeight());
         Debug.Log("Densidade do ar calculada: " + airDensityCalculated);
         return Mathf.Clamp((float)airDensityCalculated, 0, initialAirDensity);
     }
+    private float GetEngineThrust()
+    {
+        var force = engineForce * 1 / Mathf.Pow(2, GetHeight() / (maxHeight / 8f));
+        Debug.Log("Engine force: " + force);
+        return force;
+    }
+
+    private float GetHeight() => Mathf.Max(0, rigidBody.position.y);
 
     private void FixedUpdate()
     {
-        var force = (engineForce * GetAirDensity()) - GetDrag();
+        var force = (GetEngineThrust() - GetDrag());
         rigidBody.AddForce(new Vector3(0, GetLift(), force));
         if (runway.position.z <= transform.position.z - 4000f)
             runway.position = new Vector3(runway.position.x, runway.position.y, transform.position.z);
@@ -87,5 +98,6 @@ public class AircraftController : MonoBehaviour
         horizontalSpeedText.text = rigidBody.velocity.z + " m/s";
         verticalSpeedText.text = rigidBody.velocity.y + " m/s";
         heightText.text = rigidBody.position.y / 1000f + " km";
+        engineForceText.text = GetEngineThrust() / 1000f + " kN";
     }
 }
