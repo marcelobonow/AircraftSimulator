@@ -163,7 +163,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 47736954}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 49332119412ddf4449e1be0ea618878c, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
@@ -1351,7 +1351,15 @@ MonoBehaviour:
   horizontalSpeedText: {fileID: 1747609966}
   verticalSpeedText: {fileID: 779203354}
   heightText: {fileID: 1492055665}
-  engineForceText: {fileID: 0}
+  engineForceText: {fileID: 657549608}
+  mass: 3000
+  gravity: 9.8
+  dragCoeficient: 0.0027
+  dragCoeficientVertical: 1
+  wingArea: 25.9
+  liftCoeficient: 0.027
+  engineForce: 12000
+  initialAirDensity: 1.1455
 --- !u!54 &1164971473
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -17,7 +17,7 @@ public class AircraftController : MonoBehaviour
     [SerializeField] private float mass = 3000;
     [SerializeField] private float gravity = 9.8f;
     [SerializeField] private float dragCoeficient = 0.017f;
-    [SerializeField] private float dragCoeficientVertical = 0.087f;
+    [SerializeField] private float dragCoeficientVertical = 0.27f;
     [SerializeField] private float wingArea = 25.9f;
     [SerializeField] private float liftCoeficient = 0.1f;
     [SerializeField] private float engineForce = 12000;
@@ -30,7 +30,7 @@ public class AircraftController : MonoBehaviour
         Physics.gravity = new Vector3(0, -gravity, 0);
         rigidBody.mass = mass;
         rigidBody.drag = 0;
-        rigidBody.velocity = new Vector3(0, 0f, 100f);
+        rigidBody.velocity = new Vector3(0, 0f, 150f);
         rigidBody.angularDrag = 0;
     }
 
